@@ -22,19 +22,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenDto signin(AuthDto authDto) {
-        try {
-            String username = authDto.username();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDto.username(), authDto.password()));
-            User user = userService.findByUsername(username);
 
-            if (user == null) {
-                throw new UsernameNotFoundException("User not found");
-            }
-            TokenDto tokenDto = new TokenDto(jwtTokenProvider.createToken(username, user.getRoles()));
-
-            return tokenDto;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        String username = authDto.username();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDto.username(), authDto.password()));
+        User user = userService.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User " + authDto.username() + " not found");
         }
+        TokenDto tokenDto = new TokenDto(jwtTokenProvider.createToken(username, user.getRoles()));
+        return tokenDto;
     }
 }

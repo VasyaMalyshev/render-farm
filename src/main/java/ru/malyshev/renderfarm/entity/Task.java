@@ -11,11 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "tasks")
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
-@AllArgsConstructor
+@Data
+@NoArgsConstructor
 public class Task {
 
     @Id

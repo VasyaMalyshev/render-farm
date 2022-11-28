@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.malyshev.renderfarm.dto.UserDto;
-import ru.malyshev.renderfarm.exception.NotFoundException;
 import ru.malyshev.renderfarm.entity.Role;
 import ru.malyshev.renderfarm.entity.User;
 import ru.malyshev.renderfarm.entity.UserStatus;
+import ru.malyshev.renderfarm.exception_handling.RenderFarmException;
 import ru.malyshev.renderfarm.repository.RoleRepository;
 import ru.malyshev.renderfarm.repository.UserRepository;
 import ru.malyshev.renderfarm.service.UserService;
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
         try {
             User findedUser = userRepository.findByUsername(userDto.username());
             if (findedUser == null) {
-                throw new NotFoundException("Такой пользователь уже существует");
+                throw new RenderFarmException("Такой пользователь уже существует");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

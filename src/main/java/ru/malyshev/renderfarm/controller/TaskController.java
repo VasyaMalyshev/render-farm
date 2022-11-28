@@ -12,12 +12,11 @@ import ru.malyshev.renderfarm.service.TaskService;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/task")
+@RequestMapping(value = "/api/v1/task")
 @RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
-    private final StatusHistoryService statusHistoryService;
 
     @GetMapping
     public ResponseEntity<List<Task>> getAllTasks() {
@@ -29,10 +28,4 @@ public class TaskController {
         taskService.create(taskDto);
         return new ResponseEntity<>("Создана задача: " + taskDto.title(), HttpStatus.OK);
     }
-
-    @GetMapping("/status-history")
-    public ResponseEntity<?> getAllHistoryStatus() {
-        return new ResponseEntity<>(statusHistoryService.getAll(), HttpStatus.OK);
-    }
-
 }

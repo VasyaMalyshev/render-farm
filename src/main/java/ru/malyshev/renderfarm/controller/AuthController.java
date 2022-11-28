@@ -10,7 +10,7 @@ import ru.malyshev.renderfarm.service.AuthService;
 import ru.malyshev.renderfarm.service.UserService;
 
 @RestController
-@RequestMapping(value = "/api/v1/")
+@RequestMapping(value = "/")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -18,23 +18,15 @@ public class AuthController {
     private final AuthService authService;
 
     //////////////////////////////// Аутентификация пользователя /////////////////////////////////////////////////
-    @PostMapping(value = "signin")
-    public ResponseEntity<?> signin(@RequestBody AuthDto authDto) {
-        try {
-            return ResponseEntity.ok(authService.signin(authDto));
-        } catch (Exception e) {
-            return new ResponseEntity<>("Пользователь не найден", HttpStatus.BAD_REQUEST);
-        }
+    @PostMapping(value = "login")
+    public ResponseEntity<?> login(@RequestBody AuthDto authDto) {
+        return ResponseEntity.ok(authService.signin(authDto));
     }
 
     //////////////////////////////// Регистрация нового пользователя /////////////////////////////////////////////
-    @PostMapping(value = "signup")
-    public ResponseEntity<?> signup(@RequestBody UserDto userDto) {
-        try {
-            userService.register(userDto);
-            return new ResponseEntity<>("Создан новый пользователь под ником: " + userDto, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Ошибка создания нового пользователя", HttpStatus.BAD_REQUEST);
-        }
+    @PostMapping(value = "register")
+    public ResponseEntity<?> register(@RequestBody UserDto userDto) {
+        userService.register(userDto);
+        return new ResponseEntity<>("Создан новый пользователь под ником: " + userDto, HttpStatus.OK);
     }
 }

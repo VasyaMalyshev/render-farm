@@ -9,6 +9,7 @@ import ru.malyshev.renderfarm.entity.StatusHistory;
 import ru.malyshev.renderfarm.entity.Task;
 import ru.malyshev.renderfarm.entity.TaskStatus;
 import ru.malyshev.renderfarm.entity.User;
+import ru.malyshev.renderfarm.exception_handling.RenderFarmException;
 import ru.malyshev.renderfarm.repository.StatusHistoryRepository;
 import ru.malyshev.renderfarm.repository.TaskRepository;
 import ru.malyshev.renderfarm.repository.UserRepository;
@@ -43,29 +44,37 @@ public class TaskServiceImpl implements TaskService {
         task.setCompleteDate(randomTime());
         task.setUsers(users);
         taskRepository.save(task);
+        StatusHistory statusHistory = new StatusHistory();
+        statusHistory.setTask(task);
+        statusHistory.setTaskStatus(task.getTaskStatus());
+        statusHistoryRepository.save(statusHistory);
         log.info("IN create_task - task: {} successfully registered", task);
         return task;
     }
 
     @Override
     public List<Task> getAll() {
+        if (taskRepository.findAll().isEmpty()) {
+            throw new RenderFarmException("Список задач пуст");
+        }
         return taskRepository.findAll();
     }
 
     @Scheduled(fixedRate = 60000)
     public void changeStatus() {
         List<Task> result = taskRepository.findAllNotCompletedStatus();
+
         for (Task task : result) {
-            StatusHistory statusHistory = new StatusHistory();
-            statusHistory.setTask(task);
-            statusHistory.setTaskStatus(TaskStatus.COMPLETE);
-            statusHistoryRepository.save(statusHistory);
             task.setTaskStatus(TaskStatus.COMPLETE);
             taskRepository.save(task);
+            StatusHistory statusHistory = new StatusHistory();
+            statusHistory.setTask(task);
+            statusHistory.setTaskStatus(task.getTaskStatus());
+            statusHistoryRepository.save(statusHistory);
         }
     }
 
-    private static Date randomTime() {
+    private Date randomTime() {
         Date date = new Date();
         int min = 60000; // 1 минута
         int max = 300000; // 5 минут

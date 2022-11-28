@@ -2,14 +2,16 @@ package ru.malyshev.renderfarm.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@Data
 @Entity
+@Data
+@NoArgsConstructor
 public class StatusHistory {
 
     @Id
