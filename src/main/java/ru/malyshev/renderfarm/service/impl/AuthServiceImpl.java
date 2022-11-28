@@ -22,7 +22,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenDto signin(AuthDto authDto) {
-
         String username = authDto.username();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDto.username(), authDto.password()));
         User user = userService.findByUsername(username);
