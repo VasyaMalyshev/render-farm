@@ -3,6 +3,7 @@ package ru.malyshev.renderfarm.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.malyshev.renderfarm.dto.TaskDto;
 import ru.malyshev.renderfarm.entity.StatusHistory;
@@ -33,8 +34,8 @@ public class TaskServiceImpl implements TaskService {
     private final StatusHistoryRepository statusHistoryRepository;
 
     @Override
-    public Task create(TaskDto taskDto) {
-        JwtUser jwtUser = (JwtUser) taskDto.auth().getPrincipal();
+    public Task create(TaskDto taskDto, Authentication authentication) {
+        JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
         User user = userRepository.findById(jwtUser.getId()).get();
         List<User> users = new ArrayList<>();
         users.add(user);
@@ -54,11 +55,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAll() {
+    public List<TaskDto> getAll() {
         if (taskRepository.findAll().isEmpty()) {
             throw new RenderFarmException("Список задач пуст");
         }
-        return taskRepository.findAll();
+        List<Task> tasks = taskRepository.findAll();
+        List<TaskDto> taskDtos = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskDto taskDto = new TaskDto(task.getTitle(), task.getDescription());
+            taskDtos.add(taskDto);
+        }
+        return taskDtos;
     }
 
     @Scheduled(fixedRate = 60000)
