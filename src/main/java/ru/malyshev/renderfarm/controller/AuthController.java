@@ -9,6 +9,7 @@ import ru.malyshev.renderfarm.dto.UserDto;
 import ru.malyshev.renderfarm.service.AuthService;
 import ru.malyshev.renderfarm.service.UserService;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/")
 @RequiredArgsConstructor

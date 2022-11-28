@@ -10,7 +10,7 @@ import ru.malyshev.renderfarm.service.StatusHistoryService;
 import ru.malyshev.renderfarm.service.TaskService;
 
 import java.util.List;
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/api/v1/task")
 @RequiredArgsConstructor

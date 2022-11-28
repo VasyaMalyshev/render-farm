@@ -17,20 +17,20 @@ services:
       - render-localhost
 
   back:
-    image: newaldan/renderfarm
+    image: aitonik/render_back
     container_name: back
     depends_on:
       - db
     #restart: always
     ports:
-      - "8075:8075"
+      - "8081:8081"
       - "8983:8983"
     environment:
       #DB_USER: postgres
       #DB_PASSWORD: 09po:L?>
       DB_HOST: db
     networks:
-      - depo-localhost
+      - render-localhost
 
   front:
     image: aitonik/render
