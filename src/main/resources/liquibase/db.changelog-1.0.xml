@@ -141,4 +141,21 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="1.0.12" author="vasiliy.malyshev">
+        <insert tableName="tasks">
+            <column name="title" value="second_test_title"/>
+            <column name="description" value="second_test_description"/>
+            <column name="status" value="RENDERING"/>
+            <column name="complete_date" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="1.0.13" author="vasiliy.malyshev">
+        <insert tableName="tasks">
+            <column name="title" value="third_test_title"/>
+            <column name="description" value="third_test_description"/>
+            <column name="status" value="RENDERING"/>
+            <column name="complete_date" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
