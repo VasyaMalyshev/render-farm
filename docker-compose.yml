@@ -23,8 +23,7 @@ services:
       - db
     #restart: always
     ports:
-      - "8081:8081"
-      - "8983:8983"
+      - "8082:8081"
     environment:
       #DB_USER: postgres
       #DB_PASSWORD: 09po:L?>
