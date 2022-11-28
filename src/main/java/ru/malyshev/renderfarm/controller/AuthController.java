@@ -3,53 +3,36 @@ package ru.malyshev.renderfarm.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import ru.malyshev.renderfarm.dto.AuthDto;
-import ru.malyshev.renderfarm.dto.TokenDto;
-import ru.malyshev.renderfarm.model.User;
-import ru.malyshev.renderfarm.security.jwt.JwtTokenProvider;
+import ru.malyshev.renderfarm.dto.UserDto;
+import ru.malyshev.renderfarm.service.AuthService;
 import ru.malyshev.renderfarm.service.UserService;
 
-@CrossOrigin("*")
 @RestController
-@RequestMapping(value = "/")
+@RequestMapping(value = "/api/v1/")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+
     private final UserService userService;
+    private final AuthService authService;
 
-    @PostMapping(value = "authenticate")
-    public ResponseEntity<?> login(@RequestBody AuthDto requestDto) {
+    //////////////////////////////// Аутентификация пользователя /////////////////////////////////////////////////
+    @PostMapping(value = "signin")
+    public ResponseEntity<?> signin(@RequestBody AuthDto authDto) {
         try {
-            String username = requestDto.username();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.username(), requestDto.password()));
-            User user = userService.findByUsername(username);
-
-            if (user == null) {
-                throw new UsernameNotFoundException("User not found");
-            }
-
-            TokenDto tokenDto = new TokenDto(jwtTokenProvider.createToken(username, user.getRoles()));
-
-            return ResponseEntity.ok(tokenDto);
+            return ResponseEntity.ok(authService.signin(authDto));
         } catch (Exception e) {
-            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Пользователь не найден", HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PostMapping(value = "addNewUser")
-    public ResponseEntity<?> addNewUser(@RequestBody User user) {
+    //////////////////////////////// Регистрация нового пользователя /////////////////////////////////////////////
+    @PostMapping(value = "signup")
+    public ResponseEntity<?> signup(@RequestBody UserDto userDto) {
         try {
-            User user2 = userService.findByUsername(user.getUsername());
-            if (user2 != null) {
-                return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
-            }
-            userService.register(user);
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            userService.register(userDto);
+            return new ResponseEntity<>("Создан новый пользователь под ником: " + userDto, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Ошибка создания нового пользователя", HttpStatus.BAD_REQUEST);
         }

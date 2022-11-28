@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.malyshev.renderfarm.model.User;
+import ru.malyshev.renderfarm.entity.User;
 import ru.malyshev.renderfarm.security.jwt.JwtUser;
 import ru.malyshev.renderfarm.security.jwt.JwtUserFactory;
 import ru.malyshev.renderfarm.service.UserService;

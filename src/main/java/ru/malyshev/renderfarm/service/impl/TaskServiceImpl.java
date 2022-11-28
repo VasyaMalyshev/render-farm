@@ -1,18 +1,18 @@
-package ru.malyshev.renderfarm.service;
+package ru.malyshev.renderfarm.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.malyshev.renderfarm.dto.TaskDto;
-import ru.malyshev.renderfarm.model.StatusHistory;
-import ru.malyshev.renderfarm.model.Task;
-import ru.malyshev.renderfarm.model.TaskStatus;
-import ru.malyshev.renderfarm.model.User;
+import ru.malyshev.renderfarm.entity.StatusHistory;
+import ru.malyshev.renderfarm.entity.Task;
+import ru.malyshev.renderfarm.entity.TaskStatus;
+import ru.malyshev.renderfarm.entity.User;
 import ru.malyshev.renderfarm.repository.StatusHistoryRepository;
 import ru.malyshev.renderfarm.repository.TaskRepository;
 import ru.malyshev.renderfarm.repository.UserRepository;
+import ru.malyshev.renderfarm.service.TaskService;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -33,18 +33,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task create(TaskDto taskDto) {
 
-        ///////////////////////// Генерирую случайное время от 1 минуты до 5 ////////////////////
-        Date date = new Date();
-        int min = 60000; // 1 минута
-        int max = 300000; // 5 минут
-        int diff = max - min;
-        Random random = new Random();
-        int randomTime = random.nextInt(diff + 1);
-        randomTime += min;
-        date.setTime(date.getTime() + randomTime);
-
-        //////////////////////// Создаю Task /////////////////////////////////////////////////////
-
         User user = userRepository.findById(taskDto.userId()).get();
         List<User> users = new ArrayList<>();
         users.add(user);
@@ -52,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
         task.setTitle(taskDto.title());
         task.setDescription(taskDto.description());
         task.setTaskStatus(TaskStatus.RENDERING);
-        task.setCompleteDate(date);
+        task.setCompleteDate(randomTime());
         task.setUsers(users);
         taskRepository.save(task);
         log.info("IN create_task - task: {} successfully registered", task);
@@ -64,25 +52,28 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findAll();
     }
 
-    @Override
-    public Task findByTitle(String title) {
-        return null;
+    @Scheduled(fixedRate = 60000)
+    public void changeStatus() {
+        List<Task> result = taskRepository.findAllNotCompletedStatus();
+        for (Task task : result) {
+            StatusHistory statusHistory = new StatusHistory();
+            statusHistory.setTask(task);
+            statusHistory.setTaskStatus(TaskStatus.COMPLETE);
+            statusHistoryRepository.save(statusHistory);
+            task.setTaskStatus(TaskStatus.COMPLETE);
+            taskRepository.save(task);
+        }
     }
 
-    @Scheduled(fixedRate = 60000)
-    @Async
-    public void changeStatus() {
-        List<Task> result = taskRepository.findAll();
+    private static Date randomTime() {
         Date date = new Date();
-        for (Task task : result) {
-            if ((date.after(task.getCompleteDate()) && task.getTaskStatus() != TaskStatus.COMPLETE)) {
-                StatusHistory statusHistory = new StatusHistory();
-                statusHistory.setTask(task);
-                statusHistory.setTaskStatus(TaskStatus.COMPLETE);
-                statusHistoryRepository.save(statusHistory);
-                task.setTaskStatus(TaskStatus.COMPLETE);
-                taskRepository.save(task);
-            }
-        }
+        int min = 60000; // 1 минута
+        int max = 300000; // 5 минут
+        int diff = max - min;
+        Random random = new Random();
+        int randomTime = random.nextInt(diff + 1);
+        randomTime += min;
+        date.setTime(date.getTime() + randomTime);
+        return date;
     }
 }

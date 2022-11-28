@@ -1,4 +1,4 @@
-package ru.malyshev.renderfarm.model;
+package ru.malyshev.renderfarm.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

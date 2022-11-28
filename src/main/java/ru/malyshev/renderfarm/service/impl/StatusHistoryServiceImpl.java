@@ -1,9 +1,10 @@
-package ru.malyshev.renderfarm.service;
+package ru.malyshev.renderfarm.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.malyshev.renderfarm.model.StatusHistory;
+import ru.malyshev.renderfarm.entity.StatusHistory;
 import ru.malyshev.renderfarm.repository.StatusHistoryRepository;
+import ru.malyshev.renderfarm.service.StatusHistoryService;
 
 import java.util.List;
 

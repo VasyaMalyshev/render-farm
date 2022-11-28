@@ -1,4 +1,4 @@
-package ru.malyshev.renderfarm.model;
+package ru.malyshev.renderfarm.entity;
 
 public enum TaskStatus {
     RENDERING, COMPLETE

@@ -1,5 +1,5 @@
 package ru.malyshev.renderfarm.dto;
 
-public record UserDto(Long id, String username) {
+public record UserDto(String username, String password) {
 
 }

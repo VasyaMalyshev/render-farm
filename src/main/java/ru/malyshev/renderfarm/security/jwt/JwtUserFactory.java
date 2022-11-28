@@ -2,9 +2,9 @@ package ru.malyshev.renderfarm.security.jwt;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import ru.malyshev.renderfarm.model.Role;
-import ru.malyshev.renderfarm.model.User;
-import ru.malyshev.renderfarm.model.UserStatus;
+import ru.malyshev.renderfarm.entity.Role;
+import ru.malyshev.renderfarm.entity.User;
+import ru.malyshev.renderfarm.entity.UserStatus;
 
 import java.util.ArrayList;
 import java.util.List;
