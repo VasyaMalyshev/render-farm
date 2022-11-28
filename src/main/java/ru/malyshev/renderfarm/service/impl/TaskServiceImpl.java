@@ -13,6 +13,7 @@ import ru.malyshev.renderfarm.exception_handling.RenderFarmException;
 import ru.malyshev.renderfarm.repository.StatusHistoryRepository;
 import ru.malyshev.renderfarm.repository.TaskRepository;
 import ru.malyshev.renderfarm.repository.UserRepository;
+import ru.malyshev.renderfarm.security.jwt.JwtUser;
 import ru.malyshev.renderfarm.service.TaskService;
 
 import javax.transaction.Transactional;
@@ -33,8 +34,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task create(TaskDto taskDto) {
-
-        User user = userRepository.findById(taskDto.userId()).get();
+        JwtUser jwtUser = (JwtUser) taskDto.auth().getPrincipal();
+        User user = userRepository.findById(jwtUser.getId()).get();
         List<User> users = new ArrayList<>();
         users.add(user);
         Task task = new Task();

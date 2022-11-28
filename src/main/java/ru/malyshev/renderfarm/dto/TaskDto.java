@@ -1,5 +1,7 @@
 package ru.malyshev.renderfarm.dto;
 
-public record TaskDto(String title, String description, long userId) {
+import org.springframework.security.core.Authentication;
+
+public record TaskDto(String title, String description, Authentication auth) {
 
 }
